@@ -113,6 +113,7 @@ brew update
 brew bundle --file=- <<EOF
 tap "thoughtbot/formulae"
 tap "homebrew/services"
+tap "neovim/neovim"
 
 # Unix
 brew "ctags"
@@ -120,9 +121,10 @@ brew "git"
 brew "openssl"
 brew "rcm"
 brew "reattach-to-user-namespace"
-brew "the_silver_searcher"
+brew "ripgrep"
 brew "tmux"
-brew "vim"
+#brew "vim"
+brew "neovim" --HEAD
 brew "watchman"
 brew "zsh"
 
@@ -136,24 +138,18 @@ brew "hub"
 # Image manipulation
 brew "imagemagick"
 
-# Testing
-brew "qt@5.5"
-
 # Programming languages and package managers
 brew "libyaml" # should come after openssl
 brew "node"
+brew "nvm"
+brew "yarn"
+
 brew "rbenv"
 brew "ruby-build"
-brew "yarn"
 
 # Databases
 brew "postgres", restart_service: true
-brew "redis", restart_service: true
 EOF
-
-fancy_echo "Symlink qmake binary to /usr/local/bin for Capybara Webkit..."
-brew unlink qt@5.5
-brew link --force qt@5.5
 
 fancy_echo "Configuring Ruby ..."
 find_latest_ruby() {
@@ -175,6 +171,10 @@ gem update --system
 gem_install_or_update 'bundler'
 number_of_cores=$(sysctl -n hw.ncpu)
 bundle config --global jobs $((number_of_cores - 1))
+
+fancy_echo "Configuring Nodejs ..."
+mkdir ~/.nvm
+nvm install v6.9.5
 
 if [ -f "$HOME/.laptop.local" ]; then
   fancy_echo "Running your customizations from ~/.laptop.local ..."
